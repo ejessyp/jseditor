@@ -1,4 +1,4 @@
-use-case:
+Use-cases:
 1. The user can get a file list by clicking button "open file"
-2. The user can delete a file by clicking a button "delete file"
-3. The user can save a file by clicking button "save file"
+2. The user will see 4 buttons when loading the firstpage"
+3. The user click new file and the current filename is empty.
