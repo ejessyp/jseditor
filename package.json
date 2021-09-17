@@ -15,7 +15,7 @@
     "web-vitals": "^1.1.2"
   },
   "scripts": {
-    "deploy": "npm run build && rsync -av --delete build/ qipa19@ssh.student.bth.se:www/dbwebb-kurser/editor",
+    "deploy": "npm run build && rsync --chmod=a+rx -av --delete build/ qipa19@ssh.student.bth.se:www/dbwebb-kurser/editor",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
