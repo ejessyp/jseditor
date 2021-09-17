@@ -1,4 +1,5 @@
 # Jsramverk editor
+[![Build Status](https://app.travis-ci.com/ejessyp/jseditor.svg?branch=main)](https://app.travis-ci.com/ejessyp/jseditor)
 
 ## Use-cases:
 1. The user can get a file list by clicking button "open file".
