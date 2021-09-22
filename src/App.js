@@ -3,12 +3,17 @@ import PopUp from "./PopUp";
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import './App.css';
+import socketIOClient from "socket.io-client";
 
 var editorData;
 var url='https://jsramverk-editor-qipa19.azurewebsites.net/data';
 const headers = { 'Content-Type': 'application/json' };
 var content;
 var tempItems;
+
+// const socket = io('https://socket-server.jsramverk.se');
+const ENDPOINT = "http://127.0.0.1:1337";
+const socket = socketIOClient(ENDPOINT);
 
 class App extends Component {
     constructor(props) {
@@ -25,7 +30,21 @@ class App extends Component {
         this.newFile = this.newFile.bind(this);
         this.deleteFile = this.deleteFile.bind(this);
         this.togglePop = this.togglePop.bind(this);
+        this.setEditorContent = this.setEditorContent.bind(this);
     };
+
+    componentDidMount() {
+        socket.on('connect', () => {
+            console.log("Connected to the backend!");
+        });
+    };
+
+    componentWillUnmount() {
+        socket.on('disconnect', function() {
+            console.info("Disconnected");
+        });
+    }
+
 
     togglePop() {
         this.setState({
@@ -106,7 +125,9 @@ class App extends Component {
         };
     }
 
-
+    setEditorContent(data) {
+        this.setState({currentContent: data});
+    }
 
     render() {
         return (
@@ -127,13 +148,28 @@ class App extends Component {
                     // data="<p>Hello from CKEditor 5!</p>"
                     data = { this.state.currentContent }
                     onReady={ editor => {
+
                         // You can store the "editor" and use when it is needed.
                         // console.log( 'Editor is ready to use!', editor );
                     } }
                     onChange={ ( event, editor ) => {
                         editorData = editor.getData();
                         window.editorData = editorData;
-                      //  console.log( { event, editor, editorData } );
+
+                        socket.emit("create", this.state.currentFile);
+                        // socket.on('connect', function() {
+                        //     console.log(`I'm connected with the back-end`);
+                        //     socket.emit("create", docs["_id"]);
+                        // });
+                        let data = {
+                            _id: this.state.currentFile,
+                            html: editorData
+                        };
+                        socket.on("doc", (data) => {
+                            this.setEditorContent(data);
+                        });
+                        socket.emit("doc", data);
+                        // console.log( { event, editor, editorData } );
                     } }
                     onBlur={ ( event, editor ) => {
                        // console.log( 'Blur.', editor );
