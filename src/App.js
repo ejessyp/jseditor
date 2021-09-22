@@ -10,9 +10,15 @@ var url='https://jsramverk-editor-qipa19.azurewebsites.net/data';
 const headers = { 'Content-Type': 'application/json' };
 var content;
 var tempItems;
+var ENDPOINT ;
 
-// const socket = io('https://socket-server.jsramverk.se');
-const ENDPOINT = "http://127.0.0.1:1337";
+// console.log(window.location.hostname, window.location.href);
+if (window.location.hostname === "localhost") {
+    ENDPOINT = "http://127.0.0.1:1337";
+} else {
+    ENDPOINT = "https://jsramverk-editor-qipa19.azurewebsites.net/";
+};
+
 const socket = socketIOClient(ENDPOINT);
 
 class App extends Component {
@@ -155,20 +161,16 @@ class App extends Component {
                     onChange={ ( event, editor ) => {
                         editorData = editor.getData();
                         window.editorData = editorData;
-
                         socket.emit("create", this.state.currentFile);
-                        // socket.on('connect', function() {
-                        //     console.log(`I'm connected with the back-end`);
-                        //     socket.emit("create", docs["_id"]);
-                        // });
                         let data = {
                             _id: this.state.currentFile,
                             html: editorData
                         };
+                        socket.emit("doc", data);
                         socket.on("doc", (data) => {
                             this.setEditorContent(data);
                         });
-                        socket.emit("doc", data);
+
                         // console.log( { event, editor, editorData } );
                     } }
                     onBlur={ ( event, editor ) => {
