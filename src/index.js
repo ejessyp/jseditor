@@ -1,14 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
+import HomePage from './webpages/HomePage';
 import reportWebVitals from './reportWebVitals';
 
 window.editorData = "";
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <HomePage />
   </React.StrictMode>,
   document.getElementById('root')
 );

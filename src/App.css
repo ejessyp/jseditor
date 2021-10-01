@@ -2,17 +2,12 @@
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
   }
 }
-
+/*
 .App-header {
   background-color: #282c34;
   min-height: 100vh;
@@ -26,10 +21,22 @@
 
 .App-link {
   color: #61dafb;
+} */
+
+.filelist {
+    text-align: center;
+}
+
+.hidden {
+    display: none;
+}
+
+.showFileMenu {
+    display: block;
 }
 
 .savebutton {
-    background-color: #B5DA8C;
+    background-color: #F3E16D;
     width: 100px;
     margin: 10px;
     padding: 10px;
@@ -37,10 +44,16 @@
     border-radius: 5px;
     box-shadow: 2px 3px #888888;
     font-size: 1em;
+    color: #333333;
 }
 
 .savebutton:hover {
-    background-color: blue;
+    background-color: #EFEEED;
+}
+
+
+.ck-editor__editable {
+    min-height: 500px;
 }
 
 .modal {

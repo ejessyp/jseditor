@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-var url='https://jsramverk-editor-qipa19.azurewebsites.net/data';
+const url='https://jsramverk-editor-qipa19.azurewebsites.net/data';
+// const url='http://localhost:1337/data';
 
  class PopUp extends Component {
     constructor(props) {
@@ -16,8 +17,7 @@ var url='https://jsramverk-editor-qipa19.azurewebsites.net/data';
 
     handleChange(event) {
         this.setState({inputFilename: event.target.value});
-
-    }
+    };
 
     handleSubmit = (event) => {
         event.preventDefault();
@@ -25,16 +25,18 @@ var url='https://jsramverk-editor-qipa19.azurewebsites.net/data';
         // inputFilename = this.state.inputFilename;
 
         if (this.state.inputFilename !== "") {
-            console.log("test121", this.state.inputFilename);
+            // add a new file
+            console.log("popup", this.state.inputFilename);
             const requestOptions = {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json', "x-access-token": sessionStorage.token },
                 body: JSON.stringify({ filename: this.state.inputFilename, content: window.editorData })
             };
           fetch(url, requestOptions)
             .then(response => response.json());
         }
         this.props.toggle();
+        window.location.reload();
     }
 
     render() {
