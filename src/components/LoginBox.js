@@ -53,7 +53,7 @@ class LoginBox extends React.Component {
         .then(response => response.json())
         .then((result) => {
             if (result.data) {
-                // console.log(result.data);
+                console.log(result.data.token);
                 sessionStorage.setItem('token', result.data.token);
                 sessionStorage.setItem('email',  email);
                 history.push("/file");

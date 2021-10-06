@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import PopUp from "../PopUp";
+import PopUp from "./PopUp";
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import '../App.css';
@@ -19,6 +19,7 @@ if (window.location.hostname === "localhost") {
 } else {
     ENDPOINT = "https://jsramverk-editor-qipa19.azurewebsites.net/";
 };
+
 ENDPOINT = "https://jsramverk-editor-qipa19.azurewebsites.net/";
 
 const socket = socketIOClient(ENDPOINT);
@@ -173,106 +174,103 @@ class FileDocs extends Component {
         }
 
 
-            async saveFile(e) {
-                e.preventDefault();
+        async saveFile(e) {
+            e.preventDefault();
 
-                const filename = this.state.currentFile;
-                // if it is a new file go to filesave popup
-                if (filename === "") {
-                    this.togglePop();
-                } else {
-                    //Update a file
-                    const requestOptions = {
-                        method: 'PUT',
-                        headers: { 'Content-Type': 'application/json', "x-access-token": await sessionStorage.token },
-                        body: JSON.stringify({ filename: filename, content: window.editorData})
-                    };
-                    await fetch(url, requestOptions).then(response => response.json());
-                }
-            }
-
-            async deleteFile(e) {
-                // e.preventDefault();
-                const filename = this.state.currentFile;
-
-                if (filename === "") {
-                    alert("No file selected");
-                } else {
-                    const requestOptions = {
-                        method: 'DELETE',
-                        headers: { 'Content-Type': 'application/json', "x-access-token": await sessionStorage.token },
-                        body: JSON.stringify({ filename: filename })
-                    };
-                    await fetch(url, requestOptions).then(response => response.json());
-                }
-            }
-
-            // setEditorContent(data) {
-            //     this.setState({currentContent: data});
-            // }
-
-            onKeyUpDown(e) {
-                e.preventDefault();
-                let data = {
-                    _id: this.state.currentFile,
-                    html: editorData
+            const filename = this.state.currentFile;
+            // if it is a new file go to filesave popup
+            if (filename === "") {
+                this.togglePop();
+            } else {
+                //Update a file
+                const requestOptions = {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json', "x-access-token": await sessionStorage.token },
+                    body: JSON.stringify({ filename: filename, content: window.editorData})
                 };
-                //  send an update from the client to the server
-                socket.emit("doc", data);
+                await fetch(url, requestOptions).then(response => response.json());
             }
+        }
 
-            render= () => {
-                const { users } = this.state;
+        async deleteFile(e) {
+            // e.preventDefault();
+            const filename = this.state.currentFile;
 
-                return (
-                    <div className="App">
-                    <form>
-                    <button type="primary"  className="savebutton" onClick={this.newFile}>New File </button>
-                    <button type="primary"  className="savebutton" onClick={this.deleteFile}>Delete File </button>
-                    <button type="primary"  className="savebutton" onClick={this.saveFile}>Save File </button>
+            if (filename === "") {
+                alert("No file selected");
+            } else {
+                const requestOptions = {
+                    method: 'DELETE',
+                    headers: { 'Content-Type': 'application/json', "x-access-token": await sessionStorage.token },
+                    body: JSON.stringify({ filename: filename })
+                };
+                await fetch(url, requestOptions).then(response => response.json());
+                this.props.history.push("/file");
+            }
+        }
+
+        onKeyUpDown(e) {
+            e.preventDefault();
+            let data = {
+                _id: this.state.currentFile,
+                html: editorData
+            };
+            //  send an update from the client to the server
+            socket.emit("doc", data);
+        }
+
+        render= () => {
+            const { users } = this.state;
+
+            return (
+                <div className="App">
+                <form>
+                <button type="primary"  className="savebutton" onClick={this.newFile}>New File </button>
+                <button type="primary"  className="savebutton" onClick={this.deleteFile}>Delete File </button>
+                <button type="primary"  className="savebutton" onClick={this.saveFile}>Save File </button>
+                </form>
+                <p>Logined as: {sessionStorage.getItem('email')}</p>
+                <div className="filelist">Your files: {this.state.listItems}</div>
+                <div className="isOpenedContent">{this.state.isOpenedContent ?
+                    <form onSubmit={this.handleSubmit}>
+                    <label>
+                    Select allowed user:
+                    <select  value={this.state.value} onChange={this.handleChange}>
+                    <option value="">Select a user</option>
+                    {users.map((e,i) => (
+                        <option key={i} value={e.email}>{e.email}</option>)
+                    )}
+                    </select>
+                    <input className="savebutton" type="submit" value="Submit" />
+                    </label>
                     </form>
-                    <p>Logined as: {sessionStorage.getItem('email')}</p>
-                    <div className="filelist">Your files: {this.state.listItems}</div>
-                    <div className="isOpenedContent">{this.state.isOpenedContent ?
-                        <form onSubmit={this.handleSubmit}>
-                        <label>
-                        Select allowed user:
-                        <select  value={this.state.value} onChange={this.handleChange}>
-                        <option value="">Select a user</option>
-                        {users.map((e,i) => (
-                            <option key={i} value={e.email}>{e.email}</option>)
-                        )}
-                        </select>
-                        <input className="savebutton" type="submit" value="Submit" />
-                        </label>
-                        </form>
-                        : null }</div>
-                        <div>{this.state.seen ? <PopUp toggle={this.togglePop} /> : null}</div>
+                    : null }</div>
+                    <div>{this.state.seen ? <PopUp toggle={this.togglePop} /> : null}</div>
 
-                        <p> Current File: {this.state.currentFile}</p>
+                    <p> Current File: {this.state.currentFile}</p>
 
-                        <div className="text-editor" onKeyUp={this.onKeyUpDown}>
-                        <CKEditor
-                        editor={ ClassicEditor }
-                        config={{
-                            toolbar: ['undo', 'redo', '|', 'heading', '|', 'bold', 'italic', 'blockQuote', 'link', 'numberedList', 'bulletedList', 'imageUpload', 'insertTable',
-                            'tableColumn', 'tableRow', 'mergeTableCells', 'mediaEmbed', '|', 'alignment:left', 'alignment:right', 'alignment:center', 'alignment:justify']
-                        }}
-                        data = { this.state.currentContent }
-                        onReady={ editor => {
+                    <div className="text-editor" onKeyUp={this.onKeyUpDown}>
+                    <CKEditor
+                    editor={ ClassicEditor }
+                    config={{
+                        toolbar: ['undo', 'redo', '|', 'heading', '|', 'bold', 'italic', 'blockQuote', 'link', 'numberedList', 'bulletedList', 'imageUpload', 'insertTable',
+                        'tableColumn', 'tableRow', 'mergeTableCells', 'mediaEmbed']
+                    }}
+                    data = { this.state.currentContent }
+                    onReady={ editor => {
                         // You can store the "editor" and use when it is needed.
-                        console.log( 'Editor is ready to use!', editor );
+                        // console.log( 'Editor is ready to use!', editor );
                     } }
 
-                        onChange={ ( event, editor ) => {
-                            editorData = editor.getData();
-                            window.editorData = editorData;
-                        } }
-                        />
-                        </div>
-                        </div>
-                    );
-                }
+                    onChange={ ( event, editor ) => {
+                        editorData = editor.getData();
+                        window.editorData = editorData;
+                    } }
+                    />
+                    </div>
+                    </div>
+                );
             }
+        }
 
-export default FileDocs;
+        // export default FileDocs;

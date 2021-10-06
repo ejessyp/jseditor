@@ -5,7 +5,6 @@ class Header extends React.Component {
         return (
             <div className="topnav">Online Editor</div>
         );
-
     }
 }
 

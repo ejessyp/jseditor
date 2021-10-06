@@ -1,17 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { Link} from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { NavLink } from 'react-router-dom';
 
 
  const  Navigation = () => {
     // {setisLogin(sessionStorage.getItem('email') ?  "show" : "hidden")}
     // const [isLogin, setisLogin] = useState("hidden");
-    const [isLogin, setisLogin] = useState("hidden");
+    // const [isLogin, setisLogin] = useState("hidden");
 
     useEffect(() => {
         const email =   sessionStorage.getItem("email") ? "showFileMenu"  :  "hidden" ;
         const el= document.getElementById("file");
         el.classList.add(email);
-
     });
 
     return (
@@ -19,16 +18,16 @@ import { Link} from 'react-router-dom';
         <nav>
             <ul>
                 <li>
-                    <Link to="/login">Login</Link>
+                    <NavLink to="/login" activeStyle={{fontWeight: "bold", color: '#F3E16D'}}>Login</NavLink>
                 </li>
                 <li>
-                    <Link to="/Register">Register</Link>
+                    <NavLink to="/Register" activeStyle={{fontWeight: "bold", color: '#F3E16D'}}>Register</NavLink>
                 </li>
                 <li  id="file">
-                    <Link to="/file">File</Link>
+                    <NavLink to="/file" activeStyle={{fontWeight: "bold", color: '#F3E16D'}} >File</NavLink>
                 </li>
                 <li>
-                    <Link to="/about">About</Link>
+                    <NavLink to="/about" activeStyle={{fontWeight: "bold", color: '#F3E16D'}}>About</NavLink>
                 </li>
             </ul>
         </nav>

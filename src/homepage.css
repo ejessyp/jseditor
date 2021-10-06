@@ -68,16 +68,6 @@ ul a:hover {
     visibility: visible;
 }
 
-/* //Header */
-.header {
-    text-align: center;
-    padding: 5px;
-    margin-bottom: 10px;
-    font-family: Ozxgen, sans-serif;
-    font-size: 22px;
-    /* border-bottom: 2px solid $blue_theme; */
-}
-
 .box {
     display: flex;
     flex-direction: column;
