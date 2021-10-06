@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-const url='https://jsramverk-editor-qipa19.azurewebsites.net/data';
-// const url='http://localhost:1337/data';
+import  { urlGraph } from './url.js';
+
 
 class PopUp extends Component {
     constructor(props) {
@@ -32,16 +32,16 @@ class PopUp extends Component {
                         filename
                         content
                         owner
-                        }
                     }
-                    `,
-                    variables: {
-                        filename: this.state.inputFilename,
-                        content: window.editorData,
-                        owner: sessionStorage.getItem("email")
-                    },
-                });
-                console.log(query);
+                }
+                `,
+                variables: {
+                    filename: this.state.inputFilename,
+                    content: window.editorData,
+                    owner: sessionStorage.getItem("email")
+                },
+            });
+            //console.log(query);
             const requestOptions = {
                 method: 'POST',
                 headers: {
@@ -51,11 +51,11 @@ class PopUp extends Component {
                 },
                 body: query
             };
-            const urlGraph= "https://jsramverk-editor-qipa19.azurewebsites.net/graphql";
+            console.log("popup",urlGraph);
             fetch(urlGraph, requestOptions)
             .then(r => r.json())
             .then(data => console.log('data returned:', data));
-            // add a new file
+            // add a new file with rest api
             // console.log("popup", this.state.inputFilename);
             // const requestOptions = {
             //     method: 'POST',
@@ -66,7 +66,6 @@ class PopUp extends Component {
             // .then(response => response.json());
         }
         this.props.toggle();
-
         // window.location.reload();
     }
 

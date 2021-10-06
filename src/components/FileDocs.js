@@ -3,24 +3,15 @@ import PopUp from "./PopUp";
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import '../App.css';
+import  { ENDPOINT, url, urlUser, urlGraph } from './url.js';
 import socketIOClient from "socket.io-client";
 
 var editorData;
-const url='https://jsramverk-editor-qipa19.azurewebsites.net/data';
-const urlUser='https://jsramverk-editor-qipa19.azurewebsites.net/users';
+
 //const url='http://localhost:1337/data';
 var content;
 var tempItems;
-var ENDPOINT ;
 
-// console.log(window.location.hostname, window.location.href);
-if (window.location.hostname === "localhost") {
-    ENDPOINT = "http://127.0.0.1:1337";
-} else {
-    ENDPOINT = "https://jsramverk-editor-qipa19.azurewebsites.net/";
-};
-
-ENDPOINT = "https://jsramverk-editor-qipa19.azurewebsites.net/";
 
 const socket = socketIOClient(ENDPOINT);
 

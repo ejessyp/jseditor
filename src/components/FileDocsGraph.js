@@ -3,25 +3,11 @@ import PopUp from "./PopUp";
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import '../App.css';
+import  { ENDPOINT, url, urlUser, urlGraph } from './url.js';
 import socketIOClient from "socket.io-client";
 
 var editorData;
-const url='https://jsramverk-editor-qipa19.azurewebsites.net/data';
-const urlUser='https://jsramverk-editor-qipa19.azurewebsites.net/users';
-//const url='http://localhost:1337/data';
-var content;
 var tempItems;
-var ENDPOINT ;
-
-// console.log(window.location.hostname, window.location.href);
-if (window.location.hostname === "localhost") {
-    ENDPOINT = "http://127.0.0.1:1337";
-} else {
-    ENDPOINT = "https://jsramverk-editor-qipa19.azurewebsites.net/";
-};
-
-// ENDPOINT = "https://jsramverk-editor-qipa19.azurewebsites.net/";
-
 const socket = socketIOClient(ENDPOINT);
 
 
@@ -111,7 +97,7 @@ class FileDocs extends Component {
         //     method: 'GET',
         //     headers:  { 'Content-Type': 'application/json', "x-access-token": await sessionStorage.getItem('token') },
         // };
-        // // const urlFiles='http://localhost:1337/data';
+        //
         // fetch(url, requestOptions)
         // .then(res => res.json())
         // .then(
@@ -125,8 +111,10 @@ class FileDocs extends Component {
         //         console.log(error);
         //     }
         // );
-        const urlGraph="https://jsramverk-editor-qipa19.azurewebsites.net/graphql";
-        console.log("graph", urlGraph);
+
+        // get all the files which belong to this logined user by graphql
+        console.log("files doc", urlGraph);
+        const owner = await sessionStorage.getItem("email");
         await fetch(urlGraph, {
             method: 'POST',
             headers: {
@@ -134,7 +122,7 @@ class FileDocs extends Component {
                 'Accept': 'application/json',
                 "x-access-token": await sessionStorage.getItem('token')
             },
-            body: JSON.stringify({ query: "{ files { filename } }"})
+            body: JSON.stringify({ query: `{ files (owner: "${owner}")  {filename}}` })
         })
         .then(r => r.json())
         .then((result) => {
@@ -172,6 +160,7 @@ class FileDocs extends Component {
         e.preventDefault();
         let temp;
         let urlOne = url + "/" + filename;
+        console.log("opencontent", sessionStorage.token);
         const requestOptions = {
             method: 'GET',
             headers: { 'Content-Type': 'application/json', "x-access-token": await sessionStorage.token }
@@ -182,10 +171,9 @@ class FileDocs extends Component {
             temp = data;
         });
 
-        content = temp.content;
         this.setState({
             currentFile: filename,
-            currentContent: content,
+            currentContent: temp.content,
             isOpenedContent: true
         });
         // create a room for this opened file
@@ -213,19 +201,22 @@ class FileDocs extends Component {
     }
 
     async deleteFile(e) {
-        // e.preventDefault();
+        e.preventDefault();
         const filename = this.state.currentFile;
+        console.log("delete file", url);
 
         if (filename === "") {
             alert("No file selected");
         } else {
+            // console.log(sessionStorage.token);
             const requestOptions = {
                 method: 'DELETE',
                 headers: { 'Content-Type': 'application/json', "x-access-token": await sessionStorage.token },
                 body: JSON.stringify({ filename: filename })
             };
-            await fetch(url, requestOptions).then(response => response.json());
-            this.props.history.push("/file");
+            await fetch(url, requestOptions);
+            // this.props.history.push("/file");
+            // window.location.reload();
         }
     }
 

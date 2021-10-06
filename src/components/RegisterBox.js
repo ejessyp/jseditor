@@ -1,7 +1,7 @@
 
 import React from "react";
-// const url='http://localhost:1337/users';
-const url='https://jsramverk-editor-qipa19.azurewebsites.net/users';
+import  {  urlUser } from './url.js';
+
 const headers = { 'Content-Type': 'application/json' };
 
 class RegisterBox extends React.Component {
@@ -27,7 +27,7 @@ class RegisterBox extends React.Component {
         e.preventDefault()
         const email = this.state.email;
         const password = this.state.password;
-        const urlRegister = url + "/register";
+        const urlRegister = urlUser + "/register";
         console.log(urlRegister);
         const requestOptions = {
             method: 'POST',

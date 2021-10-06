@@ -1,8 +1,7 @@
 
 import React from "react";
+import  { urlUser } from './url.js';
 
-// const url='http://localhost:1337/users';
-const url='https://jsramverk-editor-qipa19.azurewebsites.net/users';
 const headers = { 'Content-Type': 'application/json' };
 
 
@@ -30,7 +29,7 @@ class LoginBox extends React.Component {
         e.preventDefault();
         const email = this.state.email;
         const password = this.state.password;
-        const urlLogin = url + "/login";
+        const urlLogin = urlUser + "/login";
         const requestOptions = {
             method: 'POST',
             headers: headers,

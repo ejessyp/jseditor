@@ -3,11 +3,12 @@ import { BrowserRouter as Router, Route} from 'react-router-dom';
 
 import '../homepage.css';
 import Layout from "../components/Layout";
-
 import RegisterBox from "../components/RegisterBox";
 import LoginBox from "../components/LoginBox";
 import About from "../components/About";
 import FileDocs from "../components/FileDocsGraph";
+import  { base } from '../components/url.js';
+console.log("basename", base);
 // import Header from "../components/Header";
 
 // if (window.location.hostname === "localhost") {
@@ -29,7 +30,7 @@ const HomePage = () => {
         // <RegisterBox />
         // <About />
         // </React.Fragment>
-        <Router >
+        <Router basename={base}>
         <Layout>
             <Route exact path="/" component={LoginBox} />
             <Route path="/login" component={LoginBox} />
