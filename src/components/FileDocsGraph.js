@@ -4,12 +4,10 @@ import Items from "./Items";
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import '../App.css';
-import  { ENDPOINT, url, urlUser, urlGraph } from './url.js';
-import socketIOClient from "socket.io-client";
+import  { socket, url, urlUser, urlGraph } from './url.js';
+//  import socketIOClient from "socket.io-client";
 
 var editorData;
-
-const socket = socketIOClient(ENDPOINT);
 
 
 class FileDocs extends Component {
@@ -43,7 +41,9 @@ class FileDocs extends Component {
         let items = this.state.items;
         items.push(item);
         this.setState({
-            items: items
+            items: items,
+            currentFile: item.filename,
+            isOpenedContent: true
         })
     }
 
@@ -97,9 +97,6 @@ class FileDocs extends Component {
                     users: result
                 });
             },
-            // Note: it's important to handle errors here
-            // instead of a catch() block so that we don't swallow
-            // exceptions from actual bugs in components.
             (error) => {
                 console.log(error);
             }
@@ -144,12 +141,11 @@ class FileDocs extends Component {
         });
     }
 
-    componentWillUnmount() {
-        socket.on('disconnect', function() {
-            console.info("Disconnected");
-        });
-
-    }
+    // componentWillUnmount() {
+    //     socket.on('disconnect', function() {
+    //         console.info("Disconnected");
+    //     });
+    // }
 
 
     togglePop() {
@@ -179,6 +175,26 @@ class FileDocs extends Component {
         .then(response => response.json())
         .then(function(data) {
             temp = data;
+        });
+
+        // get the files allowed and ownner
+        console.log("Allowed and owner", urlGraph);
+
+        await fetch(urlGraph, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                "x-access-token": await sessionStorage.getItem('token')
+            },
+            body: JSON.stringify({ query: `{ file (filename: "${filename}")  {allowed owner}}` })
+        })
+        .then(r => r.json())
+        .then((result) => {
+            console.log(result.data);
+            // this.setState({
+            //     items: result.data.files
+            // });
         });
 
         this.setState({
@@ -231,8 +247,13 @@ class FileDocs extends Component {
                     const itemsFiltered = this.state.items.filter(function(e) {return e.filename !== filename });
                     // console.log("items after delete", itemsFiltered);
                     this.setState(
-                        {items: itemsFiltered,
-                            isLoading: false})
+                        {
+                            items: itemsFiltered,
+                            isLoading: false,
+                            currentFile: "",
+                            currentContent: "",
+                            isOpenedContent: false
+                    })
                     };
                 })
             }
@@ -258,7 +279,7 @@ class FileDocs extends Component {
             <button type="primary"  className="savebutton" onClick={this.deleteFile}>Delete File </button>
             <button type="primary"  className="savebutton" onClick={this.saveFile}>Save File </button>
             </form>
-            <p>Logined as: {sessionStorage.getItem('email')}</p>
+            <p>Logined login as: {sessionStorage.getItem('email')}</p>
 
             <Items items={this.state.items} isLoading={this.state.isLoading} openContent={this.openContent}/>
 
@@ -272,10 +293,12 @@ class FileDocs extends Component {
                     <option key={i} value={e.email}>{e.email}</option>)
                 )}
                 </select>
+                <input  type="text" value="Submit" />
                 <input className="savebutton" type="submit" value="Submit" />
                 </label>
                 </form>
-                : null }</div>
+                : null }
+            </div>
                 <div>{this.state.seen ? <PopUp toggle={this.togglePop} handler={this.handler}/> : null}</div>
 
                 <p> Current File: {this.state.currentFile}</p>

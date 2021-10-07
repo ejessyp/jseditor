@@ -1,6 +1,6 @@
 import React, {useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
-
+import  { socket } from './url.js';
 
  const  Navigation = () => {
     // {setisLogin(sessionStorage.getItem('email') ?  "show" : "hidden")}
@@ -11,12 +11,15 @@ import { NavLink } from 'react-router-dom';
     useEffect(() => {
         const interval = setInterval(() => {
             setUser(sessionStorage.getItem("email"));
-        },  5000);
-        
+        },  1000);
+
         return () => clearInterval(interval);
   }, []);
 
     const logout = () => {
+        socket.on('disconnect', function() {
+              console.info("Disconnected");
+           });
        return sessionStorage.removeItem("email");
    }
     console.log(user);
