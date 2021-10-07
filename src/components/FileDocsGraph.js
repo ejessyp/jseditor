@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PopUp from "./PopUp";
+import Items from "./Items";
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import '../App.css';
@@ -7,7 +8,7 @@ import  { ENDPOINT, url, urlUser, urlGraph } from './url.js';
 import socketIOClient from "socket.io-client";
 
 var editorData;
-var tempItems;
+
 const socket = socketIOClient(ENDPOINT);
 
 
@@ -18,8 +19,8 @@ class FileDocs extends Component {
             value: "",
             currentFile: "",
             currentContent: "",
-            listItems:[],
-            listItems1:[],
+            items: [],
+            isLoading: false,
             seen: false,
             isOpenedContent: false,
             users: []
@@ -31,15 +32,26 @@ class FileDocs extends Component {
         this.deleteFile = this.deleteFile.bind(this);
         this.togglePop = this.togglePop.bind(this);
         this.handleChange = this.handleChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleAllowedSubmit = this.handleAllowedSubmit.bind(this);
         this.onKeyUpDown = this.onKeyUpDown.bind(this);
+        this.handler = this.handler.bind(this);
     };
+
+    //change itemss state when saving a file from popup so to re-render filelist
+    handler(item) {
+        console.log(item);
+        let items = this.state.items;
+        items.push(item);
+        this.setState({
+            items: items
+        })
+    }
 
     handleChange(event) {
         this.setState({value: event.target.value});
     }
 
-    async handleSubmit(e) {
+    async handleAllowedSubmit(e) {
         // update the allowed users
         e.preventDefault();
         let email = this.state.value;
@@ -126,10 +138,8 @@ class FileDocs extends Component {
         })
         .then(r => r.json())
         .then((result) => {
-            tempItems =  result.data.files.map((e) => <button key={e.filename.toString()} onClick={(f) => this.openContent(e.filename.toString(), f)}> {e.filename} </button>);
-            console.log(tempItems);
             this.setState({
-                listItems1: tempItems
+                items: result.data.files
             });
         });
     }
@@ -203,7 +213,7 @@ class FileDocs extends Component {
     async deleteFile(e) {
         e.preventDefault();
         const filename = this.state.currentFile;
-        console.log("delete file", url);
+        console.log("delete file", url, filename);
 
         if (filename === "") {
             alert("No file selected");
@@ -214,11 +224,19 @@ class FileDocs extends Component {
                 headers: { 'Content-Type': 'application/json', "x-access-token": await sessionStorage.token },
                 body: JSON.stringify({ filename: filename })
             };
-            await fetch(url, requestOptions);
-            // this.props.history.push("/file");
-            // window.location.reload();
+            await fetch(url, requestOptions)
+            .then((res) => {
+                // if delete is ok, update the items in the this.state to re-render the filelist
+                if (res.status === 204) {
+                    const itemsFiltered = this.state.items.filter(function(e) {return e.filename !== filename });
+                    // console.log("items after delete", itemsFiltered);
+                    this.setState(
+                        {items: itemsFiltered,
+                            isLoading: false})
+                    };
+                })
+            }
         }
-    }
 
     onKeyUpDown(e) {
         e.preventDefault();
@@ -242,9 +260,10 @@ class FileDocs extends Component {
             </form>
             <p>Logined as: {sessionStorage.getItem('email')}</p>
 
-            <div >Your files: {this.state.listItems1}</div>
+            <Items items={this.state.items} isLoading={this.state.isLoading} openContent={this.openContent}/>
+
             <div className="isOpenedContent">{this.state.isOpenedContent ?
-                <form onSubmit={this.handleSubmit}>
+                <form onSubmit={this.handleAllowedSubmit}>
                 <label>
                 Select allowed user:
                 <select  value={this.state.value} onChange={this.handleChange}>
@@ -257,7 +276,7 @@ class FileDocs extends Component {
                 </label>
                 </form>
                 : null }</div>
-                <div>{this.state.seen ? <PopUp toggle={this.togglePop} /> : null}</div>
+                <div>{this.state.seen ? <PopUp toggle={this.togglePop} handler={this.handler}/> : null}</div>
 
                 <p> Current File: {this.state.currentFile}</p>
 

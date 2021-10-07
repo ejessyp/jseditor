@@ -7,18 +7,15 @@ import { NavLink } from 'react-router-dom';
     // const [isLogin, setisLogin] = useState("hidden");
     // const [isLogin, setisLogin] = useState("hidden");
     const [user, setUser] = useState("");
-    useEffect(() => {
-    { /*
-        setInterval was used in order to refresh the page constantly
-    in order to have the "logout" button show immediately in place of
-    "login", as soon as user logs out.
-    */}
-        setInterval(() => {
-            //const userString = sessionStorage.getItem("email");
 
+    useEffect(() => {
+        const interval = setInterval(() => {
             setUser(sessionStorage.getItem("email"));
-            }, [])
-    }, 5000);
+        },  5000);
+        
+        return () => clearInterval(interval);
+  }, []);
+
     const logout = () => {
        return sessionStorage.removeItem("email");
    }

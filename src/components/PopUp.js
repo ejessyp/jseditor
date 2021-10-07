@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import  { urlGraph } from './url.js';
 
-
 class PopUp extends Component {
     constructor(props) {
         super(props);
@@ -21,8 +20,6 @@ class PopUp extends Component {
 
     handleSubmit = (event) => {
         event.preventDefault();
-        // let inputFilename;
-        // inputFilename = this.state.inputFilename;
 
         if (this.state.inputFilename !== "") {
             //add a new file with graphql
@@ -54,7 +51,11 @@ class PopUp extends Component {
             console.log("popup",urlGraph);
             fetch(urlGraph, requestOptions)
             .then(r => r.json())
-            .then(data => console.log('data returned:', data));
+            .then((data) => {
+                console.log("new a file in the popup:", data.data.newFile);
+                let item = {"filename": data.data.newFile.filename};
+                this.props.handler(item);
+            });
             // add a new file with rest api
             // console.log("popup", this.state.inputFilename);
             // const requestOptions = {
@@ -66,7 +67,6 @@ class PopUp extends Component {
             // .then(response => response.json());
         }
         this.props.toggle();
-        // window.location.reload();
     }
 
     render() {
@@ -84,7 +84,7 @@ class PopUp extends Component {
             <input type="text" value={this.state.inputFilename} onChange={this.handleChange} />
             </label>
             <br />
-            <button type="submit">Submit</button>
+            <button type="submit" >Submit</button>
             </form>
             </div>
             </div>
