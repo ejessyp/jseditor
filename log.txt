@@ -54,3 +54,30 @@ import { Link} from 'react-router-dom';
 };
 
 export default Navigation;
+
+
+
+efo@bth.se och emil.folino@bth.se
+
+
+
+<CKEditor
+editor={ ClassicEditor }
+config={{
+    toolbar: ['undo', 'redo', '|', 'heading', '|', 'bold', 'italic', 'blockQuote', 'link', 'numberedList', 'bulletedList', 'imageUpload', 'insertTable',
+    'tableColumn', 'tableRow', 'mergeTableCells', 'mediaEmbed']
+}}
+data = { this.state.currentContent }
+onReady={ editor => {
+    // You can store the "editor" and use when it is needed.
+    // console.log( 'Editor is ready to use!', editor );
+} }
+
+onChange={ ( event, editor ) => {
+    editorData = editor.getData();
+    window.editorData = editorData;
+} }
+/>
+
+
+https://ckeditor.com/docs/ckfinder/ckfinder3-php/quickstart.html
