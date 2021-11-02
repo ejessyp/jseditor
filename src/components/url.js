@@ -1,6 +1,6 @@
 import socketIOClient from "socket.io-client";
 
-export let  ENDPOINT, url, urlUser, urlGraph, urlPdf, urlEmail, base, socket;
+export let  ENDPOINT, url, urlUser, urlGraph, urlPdf, urlEmail, base, socket, registerLink;
 if (window.location.hostname === "localhost") {
     ENDPOINT = "http://127.0.0.1:1337";
     url = "http://localhost:1337/data";
@@ -9,6 +9,7 @@ if (window.location.hostname === "localhost") {
     urlEmail = "http://localhost:1337/send";
     urlGraph = "http://localhost:1337/graphql";
     base = "";
+    registerLink="http://localhost:3000";
 } else {
     ENDPOINT = "https://jsramverk-editor-qipa19.azurewebsites.net/";
     url = "https://jsramverk-editor-qipa19.azurewebsites.net/data";
@@ -17,7 +18,6 @@ if (window.location.hostname === "localhost") {
     urlEmail = "https://jsramverk-editor-qipa19.azurewebsites.net/send";
     urlGraph= "https://jsramverk-editor-qipa19.azurewebsites.net/graphql";
     base = '/~qipa19/dbwebb-kurser/editor/';
-
-
+    registerLink = "https://" + window.location.hostname + base;
 };
 socket = socketIOClient(ENDPOINT);

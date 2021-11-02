@@ -81,3 +81,33 @@ onChange={ ( event, editor ) => {
 
 
 https://ckeditor.com/docs/ckfinder/ckfinder3-php/quickstart.html
+
+
+<div className="isOpenedContent">{this.state.isOpenedContent ?
+
+    <form onSubmit={this.handleAllowedSubmit}>
+    <label>
+    Select allowed user:
+    <select  value={this.state.value} onChange={this.handleChange}>
+    <option value="">Select a user</option>
+    {users.map((e,i) => (
+        <option key={i} value={e.email}>{e.email}</option>)
+    )}
+    </select>
+
+    <input className="savebutton" type="submit" value="Submit" />
+
+    </label>
+    </form>
+    : null }
+
+</div>
+
+
+let fruits = ['Apple', 'Banana']
+fruits.forEach(function(item, index, array) {
+  console.log(item, index)
+})
+
+How to Test GraphQL Server Using Mocha and Chai
+https://hackernoon.com/how-to-test-graphql-server-using-mocha-and-chai-f5a10956e71a

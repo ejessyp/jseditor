@@ -3,7 +3,7 @@ import React, { Component } from "react";
 class Items extends Component {
 
     render() {
-        console.log("items", this.props);
+        /*console.log("items", this.props);*/
 
         return (
             <div>Your files:

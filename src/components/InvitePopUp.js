@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import  { url, urlEmail, urlGraph } from './url.js';
+import  { url, urlEmail, urlGraph, registerLink } from './url.js';
 import validator from  "validator";
 
 class InvitePopUp extends Component {
@@ -8,7 +8,7 @@ class InvitePopUp extends Component {
         this.state = {
             email: "",
             owner: "",
-            emailError:"",
+            emailError: "",
             emailSentSuccess: "",
             allowed: []
         };
@@ -19,6 +19,8 @@ class InvitePopUp extends Component {
 
     async componentDidMount() {
         const file = this.props.file;
+
+        // get the allowed users for this file
         await fetch(urlGraph, {
             method: 'POST',
             headers: {
@@ -69,9 +71,10 @@ class InvitePopUp extends Component {
             // send an email to this user
             const to = email;
             const from = "qipa19@student.bth.se";
-            const subject = "Invitation of edit file " + this.props.file;
-            const template = "<strong>Please click to register:</strong>" +  window.location.hostname;
-
+            const subject = "Invitation of editing file " + this.props.file;
+            const template = "<strong>Please click to  </strong>" +
+            "<a href=" + registerLink + ">Register</a>";
+            console.log("template", template);
             const reqOptionsEmail = {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -93,6 +96,7 @@ class InvitePopUp extends Component {
 
     render() {
         const allowed = this.state.allowed;
+
         return (
             <div className="invite">
             <div className="modal_content">
@@ -118,7 +122,10 @@ class InvitePopUp extends Component {
             <label>Owner:</label>{this.state.owner}
             <br />
             <label>Already invited:</label>
-            {allowed.map((message,i) => <div key={i}>{message} </div>)}
+            {allowed !== null ?
+                allowed.map((message,i) => <div key={i}>{message} </div>)
+                :null
+            }
             </div>
             </div>
         );

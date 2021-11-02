@@ -112,6 +112,10 @@
     background-color: #ccc;
 }
 
+.wrap {
+    display: flex;
+    flex-direction: row;
+}
 .new-message {
     width: 80%;
     height: 5vh;
@@ -120,7 +124,16 @@
     margin-bottom: 2rem;
     font-size: 1.8rem;
 }
-
+.monaco-editor {
+    width: 50%;
+}
+.output {
+    width: 50%;
+    background-color: #E4E4E4;
+    border: 1px solid #ccc;
+    height: 66vh;
+    margin: 0
+}
 
 @keyframes App-logo-spin {
   from {

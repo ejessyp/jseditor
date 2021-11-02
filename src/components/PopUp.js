@@ -24,18 +24,20 @@ class PopUp extends Component {
         if (this.state.inputFilename !== "") {
             //add a new file with graphql
             const query = JSON.stringify({
-                query: `mutation test($filename: String!, $content: String!, $owner: String!)  {
-                    newFile(filename: $filename, content: $content, owner: $owner) {
+                query: `mutation test($filename: String!, $content: String!, $owner: String!, $mode: String!)  {
+                    newFile(filename: $filename, content: $content, owner: $owner,mode: $mode) {
                         filename
                         content
                         owner
+                        mode
                     }
                 }
                 `,
                 variables: {
                     filename: this.state.inputFilename,
                     content: window.editorData,
-                    owner: sessionStorage.getItem("email")
+                    owner: sessionStorage.getItem("email"),
+                    mode: "text"
                 },
             });
             //console.log(query);
